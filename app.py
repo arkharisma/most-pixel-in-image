@@ -39,17 +39,27 @@ def fetch_color_detail(colorKey):
     url = url + 'rgb(' + r + ','+g+','+b+')'
     res = requests.get(url)
     response = json.loads(res.text)
-    return response['hex']['clean'], response['hex']['value'], response['name']['value']
+    return response['hex']['value'], response['name']['value'].lower()
 
 
 image = get_image("images/boly.png")
 rgb_counter(image)
 sortedColor = sort_color_dictionary(colorDict)
 for key, value in sortedColor[:50]:
-    cleanHex, hexValue, colorName = fetch_color_detail(key)
-    mostColor[cleanHex] = {
-        "hex_code": hexValue,
-        "color_name": colorName,
-        "count": value
-    }
-print(mostColor)
+    hexValue, colorName = fetch_color_detail(key)
+    if colorName in mostColor:
+        mostColor[colorName]["details"].append({
+            "hex_code": hexValue,
+            "count": value
+        })
+        mostColor[colorName]["total"] += value
+    else:
+        mostColor[colorName] = {
+            "details": [{
+                "hex_code": hexValue,
+                "count": value
+            }],
+            "total": value
+        }
+for key, value in mostColor.items():
+    print(key + ": " + str(value['total']) + ' times')
