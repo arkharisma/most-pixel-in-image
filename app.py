@@ -1,4 +1,3 @@
-from posixpath import split
 from PIL import Image
 import numpy
 import requests
@@ -22,7 +21,7 @@ def rgb_counter(image):
     for img in image:
         for i in img:
             r, g, b = i
-            key = str(r) + '-' + str(g) + '-' + str(b)
+            key = str(r) + "-" + str(g) + "-" + str(b)
             if key in colorDict:
                 colorDict[key] += 1
             else:
@@ -34,12 +33,12 @@ def sort_color_dictionary(sourceDictionary):
 
 
 def fetch_color_detail(colorKey):
-    url = 'https://www.thecolorapi.com/id?format=json&rgb='
+    url = "https://www.thecolorapi.com/id?format=json&rgb="
     r, g, b = colorKey.split('-')
-    url = url + 'rgb(' + r + ','+g+','+b+')'
+    url = url + "rgb(" + r + "," + g + "," + b + ")"
     res = requests.get(url)
     response = json.loads(res.text)
-    return response['hex']['value'], response['name']['value'].lower()
+    return response["hex"]["value"], response["name"]["value"].lower()
 
 
 image = get_image("images/boly.png")
@@ -62,4 +61,8 @@ for key, value in sortedColor[:50]:
             "total": value
         }
 for key, value in mostColor.items():
-    print(key + ": " + str(value['total']) + ' times')
+    print(key + ": " + str(value["total"]) + ' times')
+    print("details: ")
+    for val in value["details"]:
+        print(val["hex_code"] + ": " + str(val["count"]) + " times")
+    print()
