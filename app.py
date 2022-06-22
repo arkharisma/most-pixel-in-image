@@ -2,6 +2,7 @@ from PIL import Image
 import numpy
 import requests
 import json
+import sys
 
 
 colorDict = {}
@@ -60,7 +61,7 @@ def grouping_color(colors):
             }
 
 
-image = get_image("images/boly.png")
+image = get_image(sys.argv[1])
 rgb_counter(image)
 sortedColor = sort_color_dictionary(colorDict)
 grouping_color(sortedColor)
