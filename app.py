@@ -41,25 +41,29 @@ def fetch_color_detail(colorKey):
     return response["hex"]["value"], response["name"]["value"].lower()
 
 
+def grouping_color(colors):
+    for key, value in colors[:50]:
+        hexValue, colorName = fetch_color_detail(key)
+        if colorName in mostColor:
+            mostColor[colorName]["details"].append({
+                "hex_code": hexValue,
+                "count": value
+            })
+            mostColor[colorName]["total"] += value
+        else:
+            mostColor[colorName] = {
+                "details": [{
+                    "hex_code": hexValue,
+                    "count": value
+                }],
+                "total": value
+            }
+
+
 image = get_image("images/boly.png")
 rgb_counter(image)
 sortedColor = sort_color_dictionary(colorDict)
-for key, value in sortedColor[:50]:
-    hexValue, colorName = fetch_color_detail(key)
-    if colorName in mostColor:
-        mostColor[colorName]["details"].append({
-            "hex_code": hexValue,
-            "count": value
-        })
-        mostColor[colorName]["total"] += value
-    else:
-        mostColor[colorName] = {
-            "details": [{
-                "hex_code": hexValue,
-                "count": value
-            }],
-            "total": value
-        }
+grouping_color(sortedColor)
 for key, value in mostColor.items():
     print(key + ": " + str(value["total"]) + ' times')
     print("details: ")
